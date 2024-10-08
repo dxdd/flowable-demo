@@ -15,12 +15,7 @@ public class MyRestController {
     @Resource
     private MyService myService;
 
-    @PostMapping(value="/process")
-    public void startProcessInstance() {
-        myService.startProcess();
-    }
-
-    @RequestMapping(value="/tasks", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/tasks", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TaskRepresentation> getTasks(@RequestParam String assignee) {
         List<Task> tasks = myService.getTasks(assignee);
         List<TaskRepresentation> dtos = new ArrayList<TaskRepresentation>();
@@ -28,6 +23,11 @@ public class MyRestController {
             dtos.add(new TaskRepresentation(task.getId(), task.getName()));
         }
         return dtos;
+    }
+
+    @PostMapping(value = "/process")
+    public void startProcessInstance(@RequestBody StartProcessRepresentation startProcessRepresentation) {
+        myService.startProcess(startProcessRepresentation.getAssignee());
     }
 
     static class TaskRepresentation {
@@ -43,16 +43,32 @@ public class MyRestController {
         public String getId() {
             return id;
         }
+
         public void setId(String id) {
             this.id = id;
         }
+
         public String getName() {
             return name;
         }
+
         public void setName(String name) {
             this.name = name;
         }
 
+    }
+
+    static class StartProcessRepresentation {
+
+        private String assignee;
+
+        public String getAssignee() {
+            return assignee;
+        }
+
+        public void setAssignee(String assignee) {
+            this.assignee = assignee;
+        }
     }
 
 }

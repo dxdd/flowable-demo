@@ -1,7 +1,9 @@
 package com.sean.flowabledemo.controller;
 
+import com.sean.flowabledemo.dto.RollbackDto;
 import com.sean.flowabledemo.service.MyService;
 import jakarta.annotation.Resource;
+import org.flowable.engine.ProcessEngine;
 import org.flowable.task.api.Task;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ public class MyRestController {
     @Resource
     private MyService myService;
 
+    @Resource
+    private ProcessEngine processEngine;
+
     @RequestMapping(value = "/tasks", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TaskRepresentation> getTasks(@RequestParam String assignee) {
         List<Task> tasks = myService.getTasks(assignee);
@@ -27,8 +32,31 @@ public class MyRestController {
 
     @PostMapping(value = "/process")
     public void startProcessInstance(@RequestBody StartProcessRepresentation startProcessRepresentation) {
-        myService.startProcess(startProcessRepresentation.getAssignee());
+        myService.startProcess(startProcessRepresentation.getAssignee(), startProcessRepresentation.getProcessDefinitionKey());
     }
+
+    @RequestMapping(value = "/completeTask", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void completeTask(@RequestParam String taskId) {
+        processEngine.getTaskService().complete(taskId);
+    }
+
+    @RequestMapping(value = "assignTask", method = RequestMethod.GET)
+    @ResponseBody
+    public String assign(@RequestParam String taskId, @RequestParam String assignee) {
+        processEngine.getTaskService().setAssignee(taskId, assignee);
+        return "success";
+    }
+
+    @PostMapping(value = "/rollBack")
+    public void rollBack(RollbackDto rollbackDto) {
+        myService.rollbackTask(rollbackDto.getCurrentTaskId(), rollbackDto.getTargetTaskId());
+    }
+
+//    @RequestMapping
+//    @ResponseBody
+//    public void rollBackTask(String taskId){
+//        processEngine.getTaskService()
+//    }
 
     static class TaskRepresentation {
 
@@ -61,6 +89,15 @@ public class MyRestController {
     static class StartProcessRepresentation {
 
         private String assignee;
+        private String processDefinitionKey;
+
+        public String getProcessDefinitionKey() {
+            return processDefinitionKey;
+        }
+
+        public void setProcessDefinitionKey(String processDefinitionKey) {
+            this.processDefinitionKey = processDefinitionKey;
+        }
 
         public String getAssignee() {
             return assignee;

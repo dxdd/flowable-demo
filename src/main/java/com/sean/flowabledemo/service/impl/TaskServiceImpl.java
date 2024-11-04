@@ -1,42 +1,55 @@
-package com.sean.flowabledemo.service;
+package com.sean.flowabledemo.service.impl;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sean.flowabledemo.domain.Person;
-import com.sean.flowabledemo.dto.RollbackDto;
-import com.sean.flowabledemo.repository.PersonRepository;
+import com.sean.flowabledemo.service.TaskService;
 import org.flowable.engine.HistoryService;
+import org.flowable.engine.ProcessEngine;
 import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
-@Transactional
-public class MyService {
+public class TaskServiceImpl implements TaskService {
 
     @Autowired
-    private RuntimeService runtimeService;
+    @Lazy
+    private ProcessEngine processEngine;
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
-    private PersonRepository personRepository;
+    private org.flowable.engine.TaskService taskService;
 
     @Autowired
     private HistoryService historyService;
 
-    public void startProcess(String assignee, String processDefinitionKey) {
-        Person person = personRepository.findByUsername(assignee);
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("person", person);
-        runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Override
+    public void claimTask(String taskId, String userId) {
+         processEngine.getTaskService().claim(taskId, userId);
+    }
+
+    public void unClaimTask(String taskId){
+        processEngine.getTaskService().unclaim(taskId);
+    }
+
+    public void assignTask(String taskId, String assignee) {
+        processEngine.getTaskService().setAssignee(taskId, assignee);
+    }
+
+    @Override
+    public void completeTask(String taskId) {
+        processEngine.getTaskService().complete(taskId);
+    }
+
+    @Override
+    public List<Task> getTasks(String assignee) {
+        return taskService.createTaskQuery().taskAssignee(assignee).list();
     }
 
     public void rollbackTask(String currentTaskId, String targetTaskId) {
@@ -73,18 +86,4 @@ public class MyService {
             throw new RuntimeException(e);
         }
     }
-
-
-
-    public List<Task> getTasks(String assignee) {
-        return taskService.createTaskQuery().taskAssignee(assignee).list();
-    }
-
-    public void createDemoUsers() {
-        if (personRepository.findAll().size() == 0) {
-            personRepository.save(new Person("jbarrez", "Joram", "Barrez", new Date()));
-            personRepository.save(new Person("trademakers", "Tijs", "Rademakers", new Date()));
-        }
-    }
-
 }

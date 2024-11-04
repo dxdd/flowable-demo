@@ -1,4 +1,4 @@
-package com.sean.flowabledemo.dto;
+package com.sean.flowabledemo.controller.dto;
 
 import lombok.Data;
 

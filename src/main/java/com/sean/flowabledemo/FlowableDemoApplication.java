@@ -1,8 +1,7 @@
 package com.sean.flowabledemo;
 
-import com.sean.flowabledemo.service.MyService;
+import com.sean.flowabledemo.service.MockUsersService;
 import com.sean.flowabledemo.service.TaskSkipService;
-import org.flowable.engine.delegate.DelegateExecution;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,12 +15,12 @@ public class FlowableDemoApplication {
     }
 
     @Bean
-    public CommandLineRunner init(final MyService myService) {
-        return strings -> myService.createDemoUsers();
+    public CommandLineRunner init(final MockUsersService mockUsersService) {
+        return strings -> mockUsersService.createDemoUsers();
     }
 
     @Bean
-    public TaskSkipService taskSkipService(){
+    public TaskSkipService taskSkipService() {
         return new TaskSkipService();
     }
 }

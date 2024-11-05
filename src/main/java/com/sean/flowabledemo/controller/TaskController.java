@@ -31,8 +31,8 @@ public class TaskController {
     }
 
     @PostMapping(value = "claim")
-    public boolean claimTask(String taskId, String userId) {
-        taskService.claimTask(taskId, userId);
+    public boolean claimTask(String taskId, String assignee) {
+        taskService.claimTask(taskId, assignee);
         return true;
     }
 
@@ -42,12 +42,12 @@ public class TaskController {
         return true;
     }
 
-    @PostMapping(value = "/rollBack")
+    @PostMapping(value = "rollBack")
     public void rollBack(RollbackDto rollbackDto) {
         taskService.rollbackTask(rollbackDto.getCurrentTaskId(), rollbackDto.getTargetTaskId());
     }
 
-    @GetMapping(value = "/list")
+    @GetMapping(value = "list")
     public List<TaskRepresentationDto> getTasks(@RequestParam String assignee) {
         List<Task> tasks = taskService.getTasks(assignee);
         List<TaskRepresentationDto> dtos = new ArrayList<TaskRepresentationDto>();

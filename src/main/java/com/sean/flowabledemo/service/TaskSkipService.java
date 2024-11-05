@@ -1,11 +1,14 @@
 package com.sean.flowabledemo.service;
 
 import org.flowable.engine.delegate.DelegateExecution;
-import org.springframework.stereotype.Service;
 
-@Service
+/**
+ * config skip service
+ */
 public class TaskSkipService {
+    private final static String SKIP_DEFINITION_KEY = "t-2";
+
     public boolean checkSkip(DelegateExecution execution) {
-        return execution.getProcessInstanceBusinessKey().equals("");
+        return SKIP_DEFINITION_KEY.equals(execution.getProcessInstanceBusinessKey());
     }
 }

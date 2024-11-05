@@ -25,6 +25,8 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
         Person person = personRepository.findByUsername(assignee);
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("person", person);
+        // Skip expressions
+        variables.put("_FLOWABLE_SKIP_EXPRESSION_ENABLED", true);
         runtimeService.startProcessInstanceByKey(processDefinitionKey, variables);
     }
 

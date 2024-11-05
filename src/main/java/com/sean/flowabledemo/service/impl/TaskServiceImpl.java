@@ -30,8 +30,8 @@ public class TaskServiceImpl implements TaskService {
     private RuntimeService runtimeService;
 
     @Override
-    public void claimTask(String taskId, String userId) {
-         processEngine.getTaskService().claim(taskId, userId);
+    public void claimTask(String taskId, String assignee) {
+         processEngine.getTaskService().claim(taskId, assignee);
     }
 
     public void unClaimTask(String taskId){

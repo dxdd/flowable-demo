@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface TaskService {
 
-    void claimTask(String taskId, String userId);
+    void claimTask(String taskId, String assignee);
 
     void unClaimTask(String taskId);
 

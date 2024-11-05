@@ -15,7 +15,7 @@ public class ProcessInstanceController {
     @Autowired
     private ProcessInstanceServiceImpl processInstanceServiceImpl;
 
-    @PostMapping(value = "/start")
+    @PostMapping(value = "start")
     public void startProcessInstance(@RequestBody StartProcessRepresentationDto startProcessRepresentation) {
         processInstanceServiceImpl.startProcess(startProcessRepresentation.getAssignee(), startProcessRepresentation.getProcessDefinitionKey());
     }

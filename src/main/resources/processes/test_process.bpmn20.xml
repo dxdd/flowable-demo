@@ -3,7 +3,7 @@
   <process id="test_process" name="test_process" isExecutable="true">
     <startEvent id="start" name="start" flowable:formFieldValidation="true"></startEvent>
     <userTask id="t-1" name="t-1" flowable:assignee="${person.id}" flowable:formFieldValidation="true"></userTask>
-    <userTask id="t-2" name="t-2" flowable:assignee="${person.id}" flowable:formFieldValidation="true" flowable:skipExpression="${TaskSkipService.checkSkip(execution)}"></userTask>
+    <userTask id="t-2" name="t-2" flowable:assignee="${person.id}" flowable:formFieldValidation="true" flowable:skipExpression="${taskSkipService.checkSkip(execution)}"></userTask>
     <userTask id="t-3" name="t-3" flowable:assignee="${person.id}" flowable:formFieldValidation="true"></userTask>
     <endEvent id="end" name="end"></endEvent>
     <sequenceFlow id="sid-6ED7886B-94C0-4CC9-A810-B2978B497A3E" sourceRef="start" targetRef="t-1"></sequenceFlow>
